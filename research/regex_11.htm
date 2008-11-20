@@ -1,0 +1,90 @@
+<html>
+<head>
+<style type="text/css">
+	#out{
+		padding:3px;
+		border: 1px solid #000088;
+		width:560px;
+		height:340px;
+		font-family: courier, monospace;
+		background-color:#000022;
+		color:#fafaff;
+	}
+</style>
+<script type="text/javascript">
+	function $(id){return document.getElementById(id);}
+	function write(str, color){
+		if(str==null)str = "";
+		if(color)
+			$("out").innerHTML+="<span style=\"color:"+color+";\">"+str+"</span>";
+		else
+			$("out").innerHTML+=str;
+	}
+	function writeLine(str, color){
+		if(str==null)str = "";
+		write(str+"<br>", color);
+	}
+</script>
+
+<script type="text/javascript">
+var srcText = "=abcda'ccda bca'dd cdee^a";
+
+var codeTable = {
+	"=a":"=A",
+	"a'":"A'",
+	"e\\^":"E^",
+	"a":"A_"
+};
+
+function buildRegex(){
+	var str = [];
+	for(var k in codeTable){
+		str.push("("+k+")");
+	}
+	return new RegExp(str.join("|"),"g");
+}
+
+function buildReplacementFunction(){
+	var args = [];
+	var bodyCode = [];
+	
+	args.push("$0");
+	bodyCode.push("return ");
+	var idx = 1;
+	for(var k in codeTable){
+		args.push("$"+idx);
+		if(idx>1)
+			bodyCode.push(":");
+		bodyCode.push("$"+idx+"?\""+codeTable[k]+"\"");
+		idx++;
+	}
+	bodyCode.push(":0;");
+	
+	return new Function(args.join(","), bodyCode.join(""));
+}
+
+var re = buildRegex();
+reFunct = buildReplacementFunction();
+
+function init(){
+	writeLine("---- start ----");
+	writeLine();
+	
+	writeLine(srcText);
+	
+	var res = srcText.replace(re, reFunct);
+	writeLine(res);
+	
+	if(res=="=AbcdA'ccdA_ bcA'dd cdeE^A_")
+		writeLine("OK", "#00ff00");
+	else
+		writeLine("Failure", "#ff0000");
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>Regex sample #1.1</h1>
+	
+	<div id="out"></div>
+</body>
+</html>
