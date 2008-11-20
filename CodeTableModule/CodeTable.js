@@ -49,12 +49,12 @@ CodeTable.prototype = {
 				bodyCode.push(":");
 			var mt = k.match(/\(/g);
 			if(mt){
-					var add = mt.length;
-					for(var j=0;j<add; j++){
-						args.push("$"+idx);
-						repl = "(\""+ repl.replace("$"+(j+1), "\"+$"+(idx+1)+"+\"") + "\")";
-					}
-					idx++;
+				repl = "(\""+ repl.replace(/\$(\d+)/g, function($0, $1){return "\"+$"+(parseInt($1)+idx)+"+\"";}) + "\")";
+				
+				for(var j=0;j<mt.length; j++){
+					args.push("$"+(idx+j));
+				}
+				idx+=mt.length;
 			}
 			else
 				repl = "\""+repl+"\"";
