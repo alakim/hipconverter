@@ -1,6 +1,7 @@
 function CodeTable(codeTable){var _=this;
-	_.re = new RegExp(_.buildRegex(codeTable),"g");
-	var fDef = _.buildReplacementFunction(codeTable);
+	var coll = _.getSortedKeys(codeTable);
+	_.re = new RegExp(_.buildRegex(coll),"g");
+	var fDef = _.buildReplacementFunction(coll, codeTable);
 	_.reFunct = new Function(fDef.args, fDef.bodyCode);
 }
 
@@ -9,24 +10,41 @@ CodeTable.prototype = {
 		return str.replace(this.re, this.reFunct);;
 	},
 	
-	buildRegex:function(codeTable){
-		var str = [];
+	getSortedKeys:function(codeTable){
+		var coll = [];
 		for(var k in codeTable){
+			coll.push(k);
+		}
+		
+		return coll.sort(function(x,y){
+			return x.length<y.length
+				?1
+				:x.length>y.length
+					?-1
+					:0;
+		});
+	},
+	
+	buildRegex:function(keys){
+		var str = [];
+		for(var i=0; i<keys.length; i++){var k=keys[i];
 			str.push("("+k+")");
 		}
 		return str.join("|");
 	},
 	
-	buildReplacementFunction: function(codeTable){
+	buildReplacementFunction: function(keys, codeTable){
 		var args = [];
 		var bodyCode = [];
 		
 		args.push("$0");
 		bodyCode.push("return ");
 		var idx = 1;
-		for(var k in codeTable){
+		for(var i=0; i<keys.length; i++){var k=keys[i];
 			var condition = "$"+idx;
 			var repl = codeTable[k];
+			if(typeof(repl)!="string")
+				repl = String.fromCharCode(repl);
 			if(idx>1)
 				bodyCode.push(":");
 			var mt = k.match(/\(/g);
