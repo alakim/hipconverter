@@ -1,0 +1,49 @@
+<html>
+<head>
+<style type="text/css">
+	#out{
+		padding:3px;
+		border: 1px solid #000088;
+		width:560px;
+		height:340px;
+		font-family: courier, monospace;
+	}
+</style>
+<script type="text/javascript">
+	function $(id){return document.getElementById(id);}
+	function write(str){
+		$("out").innerHTML+=str;
+	}
+	function writeLine(str){
+		write(str+"<br>");
+	}
+</script>
+
+<script type="text/javascript">
+var srcText = "=abcda'ccda bca'dd cdee^a";
+var re = /(=a)|(a')|(e\^)|(a)/g;
+
+function init(){
+	writeLine("---- start ----");
+	
+	writeLine(srcText);
+	
+	var res = srcText.replace(re, function($0, $1, $2, $3, $4){
+			return $1?"=A"
+				:$2?"A'"
+				:$3?"E^"
+				:$4?"A_"
+				:$0;
+	});
+	writeLine(res);
+	
+	writeLine(res=="=AbcdA'ccdA_ bcA'dd cdeE^A_"?"OK":"Failure");
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>Regex sample #1</h1>
+	
+	<div id="out"></div>
+</body>
+</html>
