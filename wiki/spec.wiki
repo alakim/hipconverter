@@ -1,0 +1,6 @@
+#labels Phase-Requirements
+Спецификации, использованные при разработке.
+
+HIP
+
+UCS8
