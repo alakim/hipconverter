@@ -20,25 +20,45 @@ new JSUnit.Test("Regex build test 1").run = function(){
 		"a":"A_"
 	};
 	
-	this.assert(CodeTable.prototype.buildRegex(table), "(=a)|(a')|(e\\^)|(a)", "Error 1Re");
+	var keys = CodeTable.prototype.getSortedKeys(table);
 	
-	var fDef = CodeTable.prototype.buildReplacementFunction(table);
+	this.assert(CodeTable.prototype.buildRegex(keys), "(e\\^)|(=a)|(a')|(a)", "Error 1Re");
+	
+	var fDef = CodeTable.prototype.buildReplacementFunction(keys, table);
 	this.assert(fDef.args, "$0,$1,$2,$3,$4", "Error 1");
-	this.assert(fDef.bodyCode, "return $1?\"=A\":$2?\"A\'\":$3?\"E^\":$4?\"A_\":0;", "Error 2");
+	this.assert(fDef.bodyCode, "return $1?\"E^\":$2?\"=A\":$3?\"A\'\":$4?\"A_\":0;", "Error 2");
 }
 
 new JSUnit.Test("Regex build test 2").run = function(){
 	var table = {
 		"=a":"=A",
-		"([A-Z])'":"$1_",
+		"([\A-\Z])'":"$1_",
 		"e\\^":"E^"
 	};
 	
-	this.assert(CodeTable.prototype.buildRegex(table), "(=a)|(([A-Z])')|(e\\^)", "Error 1Re");
+	var keys = CodeTable.prototype.getSortedKeys(table);
 	
-	var fDef = CodeTable.prototype.buildReplacementFunction(table);
+	this.assert(CodeTable.prototype.buildRegex(keys), "(([A-Z])')|(e\\^)|(=a)", "Error 1Re");
+	
+	var fDef = CodeTable.prototype.buildReplacementFunction(keys, table);
 	this.assert(fDef.args, "$0,$1,$2,$3,$4", "Error 1");
-	this.assert(fDef.bodyCode, "return $1?\"=A\":$2?(\"\"+$3+\"_\"):$4?\"E^\":0;", "Error 2");
+	this.assert(fDef.bodyCode, "return $1?(\"\"+$2+\"_\"):$3?\"E^\":$4?\"=A\":0;", "Error 2");
+}
+
+new JSUnit.Test("Regex build test 3").run = function(){
+	var table = {
+		"x":"=A",
+		"xx":"a_",
+		"xxx":"E^"
+	};
+	
+	var keys = CodeTable.prototype.getSortedKeys(table);
+	
+	this.assert(CodeTable.prototype.buildRegex(keys), "(xxx)|(xx)|(x)", "Error 1Re");
+	
+	var fDef = CodeTable.prototype.buildReplacementFunction(keys, table);
+	this.assert(fDef.args, "$0,$1,$2,$3", "Error 1");
+	this.assert(fDef.bodyCode, "return $1?\"E^\":$2?\"a_\":$3?\"=A\":0;", "Error 2");
 }
 
 new JSUnit.Test("Тест 1").run = function(){

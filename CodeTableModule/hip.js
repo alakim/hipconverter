@@ -241,18 +241,3 @@ var Hip = {
 //	"":0xfe,
 	"jà":0xff
 };
-
-
-var coll = [];
-for(var k in Hip){
-	coll.push(k);
-	if(typeof(Hip[k])!="string")
-		Hip[k] = String.fromCharCode(Hip[k])
-}
-
-coll = coll.sort(function(x,y){return x.length<y.length});
-var sorted = {};
-for(var i=0; i<coll.length; i++){var k=coll[i];
-	sorted[k] = Hip[k];
-}
-Hip = sorted;
