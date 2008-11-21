@@ -1,0 +1,50 @@
+<html>
+<head>
+	<style type="text/css">
+	#out{
+		border: 1px solid #000088;
+		padding:4px;
+		font-family: courier, monospace;
+	}
+	</style>
+	<script type="text/javascript" src="testTable.js"></script>
+	<script type="text/javascript" src="sampleText.js"></script>
+	<script type="text/javascript">
+	
+	function Converter(table){
+		this.templates = [];
+		for(var k in table){
+			this.templates.push({
+				reg: new RegExp(k, "g"),
+				repl: table[k]
+			});
+		}
+		
+		this.convert = function(str){
+			for(var i=0; i<this.templates.length; i++){var tpl = this.templates[i];
+				str = str.replace(tpl.reg, tpl.repl);
+			}
+			return str;
+		}
+	}
+	
+	function writeLine(str){
+		document.getElementById("out").innerHTML+=str+"<br>";
+	}
+	
+	function test(){
+		var conv = new Converter(testTable);
+		var t1 = new Date();
+		var res = conv.convert(sampleText);
+		var t2 = new Date();
+		writeLine("Sample text: "+sampleText.length+" symbols");
+		writeLine("dT: "+((t2.getTime() - t1.getTime())/1000)+" sec");
+	}
+	</script>
+</head>
+<body>
+	<h1>Sequentional Mode</h1>
+	<button onclick="test()">Run test</button>
+	<div id="out"></div>
+</body>
+</html>
