@@ -7,7 +7,7 @@ function CodeTable(codeTable){var _=this;
 
 CodeTable.prototype = {
 	convert: function(str){
-		return str.replace(this.re, this.reFunct);;
+		return str.replace(this.re, this.reFunct);
 	},
 	
 	getSortedKeys:function(codeTable){
