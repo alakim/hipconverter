@@ -17,7 +17,6 @@ HipConverter.prototype = {
 //	"!":0x21,
 //	"":0x22,
 	"([À-ß])=":"$1#",//+String.fromCharCode(0x23),
-	//"([À-ß])=":0x23,
 	"([À-ß])='":"$1$$"+String.fromCharCode(0x24),
 	"([À-ß])=`":"$1%"+String.fromCharCode(0x25),
 	"([À-ß])~":"$1&"+String.fromCharCode(0x26),

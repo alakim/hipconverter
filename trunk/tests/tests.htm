@@ -1,0 +1,31 @@
+<html>
+<head>
+<title>HipConverter Unit Tests</title>
+<script type="text/javascript" src="../tools/jsUnit.js"></script>
+<script type="text/javascript" src="../converter/hipconverter.js"></script>
+<script type="text/javascript">
+new JSUnit.Test("Подключение модуля HipConverter", "Configuration").run = function(){
+	this.assert(typeof(HipConverter), "function");
+}
+
+new JSUnit.Test("Test 1", "Code table tests").run = function(){
+	var conv = new HipConverter();
+	this.assert(conv.convert("И= бу'детъ jа='кw дре'во"), "И# бyдетъ ћкw дрeво");
+	this.assert(conv.convert("Jа='кw вjь'сть гд\\сь пу'ть прв\\дныхъ"), "Ћкw вёсть гDь пyть првdныхъ");
+	this.assert(conv.convert("во'ля _е=гw`"), "в0лz є3гw2");
+	this.assert(conv.convert("_е~."), "є7.");
+	this.assert(conv.convert("s~."), "ѕ7.");
+}
+
+function init(){
+	JSUnit.init();
+}
+
+</script>
+</head>
+<body onload="init()">
+	<h1>HipConverter Unit Tests</h1>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>
