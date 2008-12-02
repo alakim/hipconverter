@@ -1,0 +1,55 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1251">
+<style type="text/css">
+body{
+	font-family:arial, sans-serif;
+	font-size:14px;
+}
+#out{
+	font-family: Irmologion UCS;
+	font-size:28px;
+}
+.red{
+	color:#ff0000;
+}
+</style>
+<script type="text/javascript" src="converter/hipconverter.js"></script>
+<script type="text/javascript">
+function $(id){return document.getElementById(id);}
+
+function init(){
+	var hipconverter = new HipConverter(true);
+	$("out").innerHTML = hipconverter.convert($("hip").innerHTML);
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>HipConverter Demo</h1>
+	<div id="hip">
+		%(_Псало'мъ дв~ду, не надпи'санъ о_у= _е=вр_е'й, а~.%)
+
+		а~. Бл~же'нъ му'жъ, и='же не и='де на совjь'тъ нечести'выхъ, 
+		и= на пути` грjь'шныхъ не ста`, и= на сjьда'лищи губи'телей 
+		не сjь'де:
+		
+		в~. Но въ зако'нjь гд\сни во'ля _е=гw`, и= въ зако'нjь 
+		_е=гw` поучи'тся де'нь и= но'щь.
+		
+		г~. И= бу'детъ jа='кw дре'во насажде'ное при и=схо'дищихъ 
+		во'дъ, _е='же пло'дъ сво'й да'стъ во вре'мя свое`, и= ли'стъ 
+		_е=гw` не w\тпаде'тъ: и= вся^, _е=ли^ка а='ще твори'тъ, 
+		о_у=спjь'етъ.
+		
+		д~. Не та'кw нечести'вiи, не та'кw: но jа='кw пра'хъ, 
+		_е=го'же возмета'етъ вjь'тръ w\т лица` земли`.
+		
+		_е~. Сегw` ра'ди не воскре'снутъ нечести'вiи на су'дъ, ниже` 
+		грjь^шницы въ совjь'тъ прв\дныхъ.
+		
+		s~. Jа='кw вjь'сть гд\сь пу'ть прв\дныхъ, и= пу'ть 
+		нечести'выхъ поги'бнетъ.
+	</div>
+	<div id="out"></div>
+</body>
+</html>
