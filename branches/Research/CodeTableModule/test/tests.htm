@@ -1,0 +1,183 @@
+<html>
+<head>
+<title>CodeTable Unit Tests</title>
+<script type="text/javascript" src="../../tools/jsUnit.js"></script>
+<script type="text/javascript" src="../CodeTable.js"></script>
+<script type="text/javascript" src="../hip.js"></script>
+<script type="text/javascript">
+new JSUnit.Test("Подключение модуля CodeTable", "Configuration").run = function(){
+	this.assert(typeof(CodeTable), "function");
+}
+new JSUnit.Test("Подключение модуля Hip", "Configuration").run = function(){
+	this.assert(typeof(Hip), "object");
+}
+
+new JSUnit.Test("Test 1a (only for Firefox and IE)", "Regex building", !window.navigator.userAgent.match(/Chrome/)).run = function(){
+	var table = {
+		"=a":"=A",
+		"a'":"A'",
+		"e\\^":"E^",
+		"a":"A_"
+	};
+	
+	var keys = CodeTable.prototype.getSortedKeys(table);
+	
+	this.assert(CodeTable.prototype.buildRegex(keys), "(e\\^)|(=a)|(a')|(a)", "Error 1Re");
+	
+	var fDef = CodeTable.prototype.buildReplacementFunction(keys, table);
+	this.assert(fDef.args, "$0,$1,$2,$3,$4", "Error 1");
+	this.assert(fDef.bodyCode, "return $1?\"E^\":$2?\"=A\":$3?\"A\'\":$4?\"A_\":0;", "Error 2");
+}
+
+new JSUnit.Test("Test 1b (only for Google Chrome)", "Regex building", window.navigator.userAgent.match(/Chrome/)!=null).run = function(){
+	var table = {
+		"=a":"=A",
+		"a'":"A'",
+		"e\\^":"E^",
+		"a":"A_"
+	};
+	
+	var keys = CodeTable.prototype.getSortedKeys(table);
+	
+	this.assert(CodeTable.prototype.buildRegex(keys), "(e\\^)|(a')|(=a)|(a)", "Error 1Re");
+	
+	var fDef = CodeTable.prototype.buildReplacementFunction(keys, table);
+	this.assert(fDef.args, "$0,$1,$2,$3,$4", "Error 1");
+	this.assert(fDef.bodyCode, "return $1?\"E^\":$2?\"A\'\":$3?\"=A\":$4?\"A_\":0;", "Error 2");
+}
+
+new JSUnit.Test("Test 2", "Regex building").run = function(){
+	var table = {
+		"=a":"=A",
+		"([A-Z])'":"$1_",
+		"e\\^":"E^"
+	};
+	
+	var keys = CodeTable.prototype.getSortedKeys(table);
+	
+	this.assert(CodeTable.prototype.buildRegex(keys), "(([A-Z])')|(e\\^)|(=a)", "Error 1Re");
+	
+	var fDef = CodeTable.prototype.buildReplacementFunction(keys, table);
+	this.assert(fDef.args, "$0,$1,$2,$3,$4", "Error 1");
+	this.assert(fDef.bodyCode, "return $1?(\"\"+$2+\"_\"):$3?\"E^\":$4?\"=A\":0;", "Error 2");
+}
+
+new JSUnit.Test("Test 3 (Issue #1)", "Regex building").run = function(){
+	var table = {
+		"x":"=A",
+		"xx":"a_",
+		"xxx":"E^"
+	};
+	
+	var keys = CodeTable.prototype.getSortedKeys(table);
+	
+	this.assert(CodeTable.prototype.buildRegex(keys), "(xxx)|(xx)|(x)", "Error 1Re");
+	
+	var fDef = CodeTable.prototype.buildReplacementFunction(keys, table);
+	this.assert(fDef.args, "$0,$1,$2,$3", "Error 1");
+	this.assert(fDef.bodyCode, "return $1?\"E^\":$2?\"a_\":$3?\"=A\":0;", "Error 2");
+}
+
+new JSUnit.Test("Test 4 (Issue #2)", "Regex building").run = function(){
+	var table = {
+		"=a":"=A",
+		"((w\\\\т)|ф|(_пс))\\\\":"$1_",
+		"e\\^":"E^"
+	};
+	
+	var keys = CodeTable.prototype.getSortedKeys(table);
+	
+	this.assert(CodeTable.prototype.buildRegex(keys), "(((w\\\\т)|ф|(_пс))\\\\)|(e\\^)|(=a)", "Error 1Re");
+	
+	var fDef = CodeTable.prototype.buildReplacementFunction(keys, table);
+	this.assert(fDef.args, "$0,$1,$2,$3,$4,$5,$6", "Error 1");
+	this.assert(fDef.bodyCode, "return $1?(\"\"+$2+\"_\"):$5?\"E^\":$6?\"=A\":0;", "Error 2");
+}
+
+new JSUnit.Test("Test 5 (Issue #2)", "Regex building").run = function(){
+	var table = {
+		"=a":"=A",
+		"((w\\\\т)|ф|(_пс))\\\\":"$1\\\\",
+		"e\\^":"E^"
+	};
+	
+	var keys = CodeTable.prototype.getSortedKeys(table);
+	
+	this.assert(CodeTable.prototype.buildRegex(keys), "(((w\\\\т)|ф|(_пс))\\\\)|(e\\^)|(=a)", "Error 1Re");
+	
+	var fDef = CodeTable.prototype.buildReplacementFunction(keys, table);
+	this.assert(fDef.args, "$0,$1,$2,$3,$4,$5,$6", "Error 1");
+	this.assert(fDef.bodyCode, "return $1?(\"\"+$2+\"\\\\\"):$5?\"E^\":$6?\"=A\":0;", "Error 2");
+}
+new JSUnit.Test("Тест 1", "Conversion").run = function(){
+	var srcText = "=abcda'ccda bca'dd cdee^a";
+	var table = new CodeTable({
+		"=a":"=A",
+		"a'":"A'",
+		"e\\^":"E^",
+		"a":"A_"
+	});
+	
+	this.assert(table.convert(srcText), "=AbcdA'ccdA_ bcA'dd cdeE^A_");
+}
+
+new JSUnit.Test("Тест 2", "Conversion",  true).run = function(){
+	var srcText = "=abcda'ccda bca'dd cdee^a";
+	var table = new CodeTable({
+		"=a":"=A",
+		"a'":"A'",
+		"([a-z])\\^":"$1*",
+		"a":"A_"
+	});
+	
+	this.assert(table.convert(srcText), "=AbcdA'ccdA_ bcA'dd cdee*A_");
+}
+
+new JSUnit.Test("Тест 3", "Conversion").run = function(){
+	var srcText = "=abcda'ccda bca'dd cdee^a";
+	var table = new CodeTable({
+		"=a":"=A",
+		"([a-z])'":"2$1''",
+		"e\\^":"E^",
+		"a":"A_"
+	});
+	
+	this.assert(table.convert(srcText), "=Abcd2a''ccdA_ bc2a''dd cdeE^A_");
+}
+
+new JSUnit.Test("Short HIP conversion 1", "Conversion").run = function(){
+	var srcText = "Бл~же'нъ му'жъ";
+	var table = new CodeTable({
+			"л~":"l",
+			"е'":"e",
+			"у'":"y"
+	});
+	this.assert(table.convert(srcText), "Бlжeнъ мyжъ");
+}
+
+new JSUnit.Test("Short HIP conversion 2", "Conversion").run = function(){
+	var srcText = "на совjь'тъ";
+	var table = new CodeTable({
+			"jь'":"ё"
+	});
+	this.assert(table.convert(srcText), "на совётъ");
+}
+
+new JSUnit.Test("Simple HIP conversion 1", "Conversion", true).run = function(){
+	var srcText = "Бл~же'нъ му'жъ, и='же не и='де на совjь'тъ нечести'выхъ, и= на пути` грjь'шныхъ не ста`, и= на сjьда\'лищи губи\'телей не сjь'де:";
+	var table = new CodeTable(Hip);
+	this.assert(table.convert(srcText), "Бlжeнъ мyжъ, и4же не и4де на совётъ нечести1выхъ, и3 на пути2 грёшныхъ не стA, и3 на сэдaлищи губи1телей не сёде:");
+}
+
+function init(){
+	JSUnit.init();
+	document.getElementById("out").innerHTML = CodeTable.prototype.buildRegex(Hip);
+}
+</script>
+</head>
+<body onload="init()">
+	<h1>CodeTable Unit Tests</h1>
+	<div id="testContainer" style="display:none;"></div>
+	<div id="out"></div>
+</body>
+</html>

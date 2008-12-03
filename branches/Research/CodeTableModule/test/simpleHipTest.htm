@@ -1,0 +1,27 @@
+<html>
+<head>
+<title>Simple HIP Conversion Tests</title>
+<script type="text/javascript" src="../CodeTable.js"></script>
+<script type="text/javascript" src="../hip.js"></script>
+<script type="text/javascript">
+	function write(str){
+		document.getElementById("out").innerHTML+=str+"<br>";
+	}
+
+	function init(){
+		var srcText = "Бл~же'нъ му'жъ, и='же не и='де на совjь'тъ нечести'выхъ, и= на пути` грjь'шныхъ не ста`, и= на сjьда\'лищи губи\'телей  не сjь'де:";
+		var table = new CodeTable(Hip);
+		var res = table.convert(srcText);
+		
+		if(res=="Бlжeнъ мyжъ, и4же не и4де на совётъ нечести1выхъ, и3 на пути2 грёшныхъ не стA, и3 на сэдaлищи губи1телей не сёде:")
+			write("OK");
+		else
+			write("Failure");
+	}
+</script>
+</head>
+<body onload="init()">
+	<h1>Simple HIP Conversion Tests</h1>
+	<div id="out"></div>
+</body>
+</html>
