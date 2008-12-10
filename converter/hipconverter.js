@@ -11,6 +11,8 @@ function HipConverter(htmlMode){var _=this;
 	}
 }
 
+HipConverter.version = "1.0.22";
+
 HipConverter.prototype = {
 	table: {
 //	"":0x20,
