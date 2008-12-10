@@ -1,0 +1,98 @@
+<html>
+<head>
+<style type="text/css">
+#out{
+	font-family:courier, monospace;
+	width:600px;
+	height:400px;
+}
+#template{
+	border:1px solid black;
+	padding:5px;
+	width:600px;
+	font-family:courier, monospace;
+}
+</style>
+<script type="text/javascript" src="hip2ucs.js"></script>
+<script type="text/javascript">
+function $(id){return document.getElementById(id);}
+
+	
+function getSortedKeys(codeTable){
+	var coll = [];
+	for(var k in codeTable){
+		coll.push(k);
+	}
+	
+	return coll.sort(function(x,y){
+		return x.length<y.length
+			?1
+			:x.length>y.length
+				?-1
+				:0;
+	});
+}
+
+function buildCodeTable(){
+	var res = [];
+	var coll = getSortedKeys(Hip2UcsTable);
+	for(var i=0; i<coll.length; i++){var k=coll[i];
+		var repl = Hip2UcsTable[k];
+		if(typeof(repl)!="string")
+			repl = String.fromCharCode(repl);
+		res.push("[/"+k+"/g,\""+repl+"\"]");
+	}
+	return res.join(",");
+}
+
+function buildCode(){
+	var template = $("template").innerHTML.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g,"\"").replace(/&amp;/g, "&");
+	template = template.replace("<%=codeTable%>", buildCodeTable());
+	return template;
+}
+
+function init(){
+	document.getElementById("out").value = buildCode();
+}
+</script>
+</head>
+<body onload="init()">
+<h1>Code Generator User Interface</h1>
+<h2>Generated code</h2>
+<textarea id="out"></textarea>
+
+<h2>Template</h2>
+<pre id="template">
+	
+function HipConverter(htmlMode){var _=this;
+	_.htmlMode = htmlMode==null?false:htmlMode;
+}
+
+HipConverter.version = "2.0.23";
+
+HipConverter.prototype = {
+	htmlMode:false,
+	templates:[&lt;%=codeTable%&gt;],
+	markup:[
+		{re:/\%\(/g, repl:&quot;&lt;span class=\"red\"&gt;&quot;},
+		{re:/\%\)/g, repl:&quot;&lt;/span&gt;&quot;}
+	],
+
+	convert: function(txt){var _=this;
+		for(var i=0; i&lt;_.templates.length; i++){var tpl=_.templates[i];
+			txt = txt.replace(tpl[0], tpl[1]);
+		}
+		if(_.htmlMode){
+			for(var i=0; i&lt;_.markup.length; i++){var m=_.markup[i];
+				txt = txt.replace(m.re, m.repl);
+			}
+		}
+		else{
+			txt = txt.replace(/\%[\)\(]/g, "");
+		}
+		return txt
+	}
+};
+</pre>
+</body>
+</html>

@@ -1,20 +1,4 @@
-function HipConverter(htmlMode){var _=this;
-	_.htmlMode = htmlMode==null?false:htmlMode;
-	
-	_.templates = [];
-	var coll = _.getSortedKeys(_.table);
-	for(var i=0; i<coll.length; i++){var k=coll[i];
-		var repl = _.table[k];
-		if(typeof(repl)!="string")
-			repl = String.fromCharCode(repl);
-		_.templates.push({re:new RegExp(k, "g"), repl:repl});
-	}
-}
-
-HipConverter.version = "1.0.22";
-
-HipConverter.prototype = {
-	table: {
+var Hip2UcsTable = {
 //	"":0x20,
 //	"!":0x21,
 //	"":0x22,
@@ -195,44 +179,4 @@ HipConverter.prototype = {
 	"jü":"ý",
 //	"":0xfe,
 	"jà":0xff
-	},
-	
-	templates:[],
-	htmlMode:false,
-	
-	markup:[
-		{re:/\%\(/g, repl:"<span class=\"red\">"},
-		{re:/\%\)/g, repl:"</span>"}
-		//,{re:/\n/g, repl:"<br>"}
-	],
-	
-	getSortedKeys:function(codeTable){
-		var coll = [];
-		for(var k in codeTable){
-			coll.push(k);
-		}
-		
-		return coll.sort(function(x,y){
-			return x.length<y.length
-				?1
-				:x.length>y.length
-					?-1
-					:0;
-		});
-	},
-	
-	convert: function(txt){var _=this;
-		for(var i=0; i<_.templates.length; i++){var tpl=_.templates[i];
-			txt = txt.replace(tpl.re, tpl.repl);
-		}
-		if(_.htmlMode){
-			for(var i=0; i<_.markup.length; i++){var m=_.markup[i];
-				txt = txt.replace(m.re, m.repl);
-			}
-		}
-		else{
-			txt = txt.replace(/\%[\)\(]/g, "");
-		}
-		return txt
-	}
 };
