@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title></title>
+<meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1">
+<meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
+<style>
+#ucs{
+	font-family:irmologion ucs;
+	font-size:28px;
+}
+div.pageMark{
+	font-family:times;
+	font-size:18px;
+	text-align:center;
+}
+div.norm{
+	font-family:times;
+	font-size:18px;
+}
+</style>
+<script language="javascript" src="lib/hipconverter.js"></script>
+
+<script language="javascript">
+
+var hipconverter = new HipConverter(true);
+
+function viewHip(whenTyping){
+	if(whenTyping && !document.getElementById("cbWhenTyping").checked)
+		return;
+	var strIn = document.getElementById('hip').value;
+	document.getElementById('ucs').innerHTML = hipconverter.convert(strIn);
+}
+
+
+	
+
+</script>
+</head>
+<body>
+<textarea id="hip" style="width:100%; height:100px;" onkeyup="viewHip(true)"></textarea>
+<br>
+<input type=button value="Start" onclick="viewHip()">
+<input type=checkbox id="cbWhenTyping" checked> convert when typing
+<div id="ucs">
+</div>
+
+
+</body>
+</html>
