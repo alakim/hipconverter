@@ -20,8 +20,13 @@ new JSUnit.Test("Test 1", "Code table tests").run = function(){
 new JSUnit.Test("Test 2", "Code table tests").run = function(){
 	var conv = new HipConverter();
 	
-	this.assert(conv.convert("душа` моя`"), "душA моЅ");
+	this.assert(conv.convert("душа` моя`"), "душA моS");
 	this.assert(conv.convert("_о='"), "џ");
+}
+
+new JSUnit.Test("Test 2", "Code table tests").run = function(){
+	var conv = new HipConverter();
+	this.assert(conv.convert("sS"), "sS");	
 }
 
 function init(){
