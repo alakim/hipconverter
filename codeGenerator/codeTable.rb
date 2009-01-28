@@ -1,4 +1,4 @@
-$codeTable = {
+$asciiTable = {
 	0x20 => " ",
 	0x21 => "!",
 	0x22 => "\"",
@@ -223,4 +223,7 @@ $codeTable = {
 	0xfd => "ý",
 	0xfe => "þ",
 	0xff => "ÿ"
+}
+
+$codeTable = {
 }
