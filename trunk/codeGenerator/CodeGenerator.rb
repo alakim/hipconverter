@@ -1,6 +1,6 @@
 require 'codeTable'
 
-templateCode = $codeTable.keys.map{|k| "[/#{$codeTable[k]}/, \"$1\"]"}.join ","
+templateCode = $codeTable.keys.map{|k| "[/#{k}/g, \"#{$codeTable[k]}\"]"}.join ","
 
 $stdout = File.open("../lib/hipconverter.js", "w+")
 
