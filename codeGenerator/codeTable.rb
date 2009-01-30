@@ -226,4 +226,13 @@ $asciiTable = {
 }
 
 $codeTable = {
+	"([À-ß])=" => "$1#"+$asciiTable[0x23],
+	"([À-ß])='" => "$1$$"+$asciiTable[0x24],
+	"([À-ß])=`" => "$1%"+$asciiTable[0x25],
+	"([À-ß])~" => "$1&"+$asciiTable[0x26],
+
+	"î'" => $asciiTable[0x30],
+	"'" => $asciiTable[0x31],
+	"`" => $asciiTable[0x32],
+	"=" => $asciiTable[0x33]
 }
